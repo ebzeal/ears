@@ -172,7 +172,7 @@ class UserController {
         return response(res, 401, 'failure', 'Unauthorized request');
       }
 
-      const { title, email, firstName, lastName,  password, bio } = inputObj;
+      const { title, email, firstName, lastName, phone,  password, bio } = inputObj;
 
       const foundUser = await User.findById(id);
       
@@ -192,6 +192,7 @@ class UserController {
         title: title?? foundUser.title, 
         email: email?? foundUser.email, 
         fullName:`${firstName} ${lastName}` ?? foundUser.fullName, 
+        phone:`${phone}` ?? foundUser.phone, 
         bio: bio?? foundUser.bio });
 
       return response(res, 200, 'success', 'User updated');
