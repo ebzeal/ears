@@ -1,23 +1,6 @@
 import { checkSchema } from 'express-validator';
 
 const signUpSchema = checkSchema({
-  phone: {
-    in: 'body',
-    customSanitizer: {
-      options: (phone) => (typeof phone === 'string' ? phone.trim() : 1)
-    },
-    isString: {
-      errorMessage: 'phone has to be a string'
-    },
-    isMobilePhone: {
-      errorMessage: 'please use a valid mobile phone number'
-    },
-    isLength: {
-      options: {
-        min: 9
-      },
-    }
-  },
   firstName: {
     in: 'body',
     customSanitizer: {
@@ -56,25 +39,7 @@ const signUpSchema = checkSchema({
       errorMessage: 'lastName is too short'
     }
   },
-  userName: {
-    in: 'body',
-    customSanitizer: {
-      options: (userName) => (typeof userName === 'string' ? userName.trim() : 1)
-    },
-    isEmpty: {
-      negated: true,
-      errorMessage: 'Username cannot be empty'
-    },
-    isString: {
-      errorMessage: 'Username has to be a string'
-    },
-    isLength: {
-      options: {
-        min: 2
-      },
-      errorMessage: 'Username is too short'
-    }
-  },
+  
   email: {
     in: 'body',
     customSanitizer: {
@@ -124,17 +89,17 @@ const logInSchema = checkSchema({
       options: (user) => (typeof user === 'string' ? user.trim() : 1)
     },
     isString: {
-      errorMessage: 'Username or Email or phone number has to be a string'
+      errorMessage: ' Email has to be a string'
     },
     isEmpty: {
       negated: true,
-      errorMessage: 'Username or Email or phone number field cannot be empty'
+      errorMessage: ' Email field cannot be empty'
     },
     isLength: {
       options: {
         min: 2
       },
-      errorMessage: 'Username or Email or phone number is too short'
+      errorMessage: ' Email is too short'
     }
   },
   password: {

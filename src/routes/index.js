@@ -21,7 +21,7 @@ route.get('/', (req, res) => {
 
 route.post('/user/signup',  signUpSchema, handleValidationErrors, UserController.signUp);
 route.post('/user/login', logInSchema, handleValidationErrors, UserController.logIn);
-route.get('/user', UserController.getUser);
+route.get('/user/:id', UserController.getUser);
 route.put('/user/toggleAccess/:id', accessMiddleware.authoriseUser, UserController.toggleUserAccess);
 route.put('/user/:id', accessMiddleware.authoriseUser, UserController.updateUser);
 

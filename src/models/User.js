@@ -21,16 +21,6 @@ const userSchema = new Schema({
     type: String,
     required: true,
   },
-  userName: {
-    type: String,
-    required: true,
-    index: { unique: true }
-  },
-  phone: {
-    type: String,
-    required: true,
-    index: { unique: true }
-  },
   password: {
     type: String,
     required: true

@@ -52,7 +52,7 @@ class CommitteeController {
     try {
       const { id } = req.params;
 
-      const newCommittee = Committee.findById({_id:id})
+      const newCommittee = await Committee.findById({_id:id})
 
       return response(res, 200, 'success', 'Committee returned successfully', '', newCommittee);
     } catch (err) {

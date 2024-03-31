@@ -144,7 +144,7 @@ class OpeningController {
       try {
         const { id } = req.params;
 
-        const opening = Opening.findOne({_id: id})
+        const opening = await Opening.findOne({_id: id})
   
         return response(res, 200, 'success', 'opening applied to', opening);
       } catch (error) {

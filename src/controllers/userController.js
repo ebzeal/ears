@@ -23,22 +23,17 @@ class UserController {
     try {
       const inputObj = UtilHelp.cleanInput(req.body);
 
-      const { email, userName, phone, firstName, lastName, title  } = inputObj;
+      const { email, firstName, lastName, title  } = inputObj;
 
-      const foundUser = await UserHelp.findUser(userName, email, phone);
+      const foundUser = await UserHelp.findUser( email);
 
       if (foundUser !== null) {
-        if (foundUser.userName === userName) {
-          return response(res, 400, 'failure', 'This username already exists');
-        }
 
         if (foundUser.email === email) {
           return response(res, 400, 'failure', 'Another user is registered with this email');
         }
 
-        if (foundUser.phone === phone) {
-          return response(res, 400, 'failure', 'This phone number is registered with another user');
-        }
+       
         return response(res, 400, 'failure', 'This user already exists');
       }
 
@@ -47,8 +42,6 @@ class UserController {
 
       const newUser = new User({
         email,
-        userName,
-        phone,
         password: hashedPassword,
         fullName: `${firstName} ${lastName}`, 
         title
@@ -58,9 +51,7 @@ class UserController {
 
       const payload = {
         userId: createdUser.id,
-        userName: createdUser.userName,
         userEmail: createdUser.email,
-        userPhone: createdUser.phone,
         fullName: createdUser.fullName, 
         title: createdUser.title, 
         privilege: createdUser.privilege
@@ -90,17 +81,7 @@ class UserController {
       // const foundUser = await UserHelp.findUser(user, user, user);
 
       const foundUser = await User.findOne({
-        $or: [
-          {
-            userName: user
-          },
-          {
             email: user
-          },
-          {
-            phone: user
-          }
-        ]
       });
 
 
@@ -115,9 +96,7 @@ class UserController {
 
       const payload = {
         userId: foundUser.id,
-        userName: foundUser.userName,
         userEmail: foundUser.email,
-        phone: foundUser.phone,
         userType: foundUser.userType,
         privilege: foundUser.privilege
       };
@@ -169,7 +148,7 @@ class UserController {
       try {
         const { id } = req.params;
   
-        const newUser = User.findById({_id:id})
+        const newUser = await User.findById({_id:id})
   
         return response(res, 200, 'success', 'User returned successfully', '', newUser);
       } catch (err) {
@@ -193,19 +172,13 @@ class UserController {
         return response(res, 401, 'failure', 'Unauthorized request');
       }
 
-      const { title, email, userName, firstName, lastName, phone, password, bio } = inputObj;
+      const { title, email, firstName, lastName,  password, bio } = inputObj;
 
       const foundUser = await User.findById(id);
-        if (foundUser.userName === userName) {
-          return response(res, 400, 'failure', 'This username already exists');
-        }
+      
 
         if (foundUser.email === email) {
           return response(res, 400, 'failure', 'Another user is registered with this email');
-        }
-
-        if (foundUser.phone === phone) {
-          return response(res, 400, 'failure', 'This phone number is registered with another user');
         }
 
         if(password) {
@@ -218,9 +191,7 @@ class UserController {
       await User.findOneAndUpdate({_id: id}, { 
         title: title?? foundUser.title, 
         email: email?? foundUser.email, 
-        userName: userName?? foundUser.userName, 
         fullName:`${firstName} ${lastName}` ?? foundUser.fullName, 
-        phone: phone?? foundUser.phone, 
         bio: bio?? foundUser.bio });
 
       return response(res, 200, 'success', 'User updated');
@@ -245,20 +216,14 @@ class UserController {
   //       return response(res, 401, 'failure', 'Unauthorized request');
   //     }
 
-  //     const { title, email, userName, firstName, lastName, phone, password, bio } = inputObj;
+  //     const { title, email, firstName, lastName, password, bio } = inputObj;
 
   //     const foundUser = await User.findById(id);
-  //       if (foundUser.userName === userName) {
-  //         return response(res, 400, 'failure', 'This username already exists');
-  //       }
 
   //       if (foundUser.email === email) {
   //         return response(res, 400, 'failure', 'Another user is registered with this email');
   //       }
 
-  //       if (foundUser.phone === phone) {
-  //         return response(res, 400, 'failure', 'This phone number is registered with another user');
-  //       }
 
   //       if(password) {
   //         const hashedPassword = await passwordHelp.hashPassword(password);
@@ -270,9 +235,7 @@ class UserController {
   //     await User.findOneAndUpdate({_id: id}, { 
   //       title: title?? foundUser.title, 
   //       email: email?? foundUser.email, 
-  //       userName: userName?? foundUser.userName, 
   //       fullName:`${firstName} ${lastName}` ?? foundUser.fullName, 
-  //       phone: phone?? foundUser.phone, 
   //       bio: bio?? foundUser.bio });
 
   //     return response(res, 200, 'success', 'User updated');
