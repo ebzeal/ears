@@ -2,61 +2,52 @@ import mongoose from 'mongoose';
 
 const { Schema } = mongoose;
 
-/**
-
- *
- * @description Committee Collection.
- */
-
 const openingSchema = new Schema({
   title: {
     type: String,
-    required: true,
-    index: { unique: true }
+    required: [true, 'Title is required'],
+    unique: true,
   },
   description: {
     type: String,
+    required: [true, 'Description is required'],
   },
   status: {
     type: String,
-    enum: ['opened', 'close'],
+    enum: ['opened', 'closed'],
     default: 'opened',
-    required: true
   },
   createdOn: {
     type: Date,
-    default: Date.now
+    default: Date.now,
   },
   applications: [
     {
       user: {
         type: Schema.Types.ObjectId,
-        ref: 'users'
+        ref: 'users',
       },
       status: {
         type: String,
         enum: ['considered', 'accepted', 'rejected'],
         default: 'considered',
-        required: true
       },
       reviews: [
         {
           reviewer: {
             type: Schema.Types.ObjectId,
-            ref: 'users'
+            ref: 'users',
           },
-          review: {
-            type: String,
-          },
+          review: String,
           rating: {
             type: Number,
             min: 1,
-            max: 10
-        }
-        }
-      ]
-    }
+            max: 10,
+          },
+        },
+      ],
+    },
   ],
-});
+}, { timestamps: true });
 
 export default mongoose.model('opening', openingSchema);

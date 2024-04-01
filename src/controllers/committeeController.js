@@ -1,39 +1,20 @@
-/* eslint-disable max-len */
 import committeeDB from '../models/Committee';
 import response from '../helpers/resHelp';
 import UtilHelp from '../helpers/utilsHelp';
 
 const Committee = committeeDB;
 
-/**
- * @class authController
- */
 class CommitteeController {
-  /**
-   * @static
-   * @param {object} req - request object
-   * @param {object} res - response object
-   * @return {object} A JSON Response object
-   * @memberof CommitteeController
-   */
   static async createCommittee(req, res) {
     try {
-      if(req.user.privilege !== 'admin'){
+      if (req.user.privilege !== 'admin') {
         return response(res, 401, 'failure', 'Unauthorized request');
       }
 
-      const inputObj = UtilHelp.cleanInput(req.body);
+      const { name, committee_head, description, committee_members } = UtilHelp.cleanInput(req.body);
 
-      const { name, committee_head, description, committee_members  } = inputObj;
-
-      
-
-      const newCommittee = new Committee({
-        name, committee_head, description, committee_members
-      });
-
+      const newCommittee = new Committee({ name, committee_head, description, committee_members });
       const createdCommittee = await newCommittee.save();
-
 
       return response(res, 201, 'success', 'Committee created successfully', '', createdCommittee);
     } catch (err) {
@@ -41,59 +22,40 @@ class CommitteeController {
     }
   }
 
-   /**
-   * @static
-   * @param {object} req - request object
-   * @param {object} res - response object
-   * @return {object} A JSON Response object
-   * @memberof CommitteeController
-   */
-   static async getCommittee(req, res) {
+  static async getCommittee(req, res) {
     try {
       const { id } = req.params;
+      const committee = await Committee.findById(id);
 
-      const newCommittee = await Committee.findById({_id:id})
+      if (!committee) {
+        return response(res, 404, 'failure', 'Committee not found');
+      }
 
-      return response(res, 200, 'success', 'Committee returned successfully', '', newCommittee);
+      return response(res, 200, 'success', 'Committee returned successfully', '', committee);
     } catch (err) {
       return response(res, 500, 'failure', '', err.message);
     }
   }
-  
-  /**
-   * @static
-   * @param {*} req Request
-   * @param {*} res Response
-   * @returns {object} Json response
-   * @memberof CommitteeController
-   */
+
   static async updateCommittee(req, res) {
     try {
-      if(req.user.privilege !== 'admin'){
+      if (req.user.privilege !== 'admin') {
         return response(res, 401, 'failure', 'Unauthorized request');
       }
-      const inputObj = UtilHelp.cleanInput(req.body);
-      const { name, committee_head, description, committee_members  } = inputObj;
+
       const { id } = req.params;
-    
+      const updateData = UtilHelp.cleanInput(req.body);
+      const updatedCommittee = await Committee.findByIdAndUpdate(id, updateData, { new: true });
 
-      const foundCommittee = await Committee.findOne({_id:id});
+      if (!updatedCommittee) {
+        return response(res, 404, 'failure', 'Committee not found');
+      }
 
-      await Committee.findOneAndUpdate({_id: id}, {
-        name: name?? foundCommittee.name,
-        committee_head: committee_head?? foundCommittee.committee_head,
-        description: description?? foundCommittee.description,
-        committee_members: committee_members?? foundCommittee.committee_members
-        });
-
-      return response(res, 200, 'success', 'User updated');
+      return response(res, 200, 'success', 'Committee updated successfully', '', updatedCommittee);
     } catch (error) {
-      return res.status(400).send(error);
+      return res.status(500).send(error.message);
     }
   }
-
-  
-
 }
 
 export default CommitteeController;

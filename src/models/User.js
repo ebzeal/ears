@@ -2,70 +2,49 @@ import mongoose from 'mongoose';
 
 const { Schema } = mongoose;
 
-/**
-
- *
- * @description User Collection.
- */
-
 const userSchema = new Schema({
   email: {
     type: String,
-    required: true,
-    index: { unique: true }
+    required: [true, 'Email is required'],
+    unique: true,
+    match: [/.+\@.+\..+/, 'Please fill a valid email address'], 
   },
-  title: {
-    type: String,
-  },
+  title: String,
   fullName: {
     type: String,
-    required: true,
+    required: [true, 'Full name is required'],
   },
   phone: {
     type: String,
-    required: true,
-    index: { unique: true }
+    required: [true, 'Phone number is required'],
+    unique: true,
   },
   password: {
     type: String,
-    required: true
+    required: [true, 'Password is required'],
   },
   userType: {
     type: String,
     enum: ['applicant', 'faculty'],
     default: 'applicant',
-    required: true
   },
   privilege: {
     type: String,
     enum: ['user', 'admin'],
     default: 'user',
-    required: true
   },
-  bio: {
-    type: String,
-  },
+  bio: String,
   createdOn: {
     type: Date,
-    default: Date.now
+    default: Date.now,
   },
   qualifications: [
     {
-      user: {
-        type: Schema.Types.ObjectId,
-        ref: 'users'
-      },
-      quaulification: {
-        type: String,
-      },
-      school: {
-        type: String,
-      },
-      year: {
-        type: String,
-      }
-    }
+      qualification: String,
+      school: String,
+      year: String,
+    },
   ],
-});
+}, { timestamps: true });
 
 export default mongoose.model('users', userSchema);
