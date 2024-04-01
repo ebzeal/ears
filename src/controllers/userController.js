@@ -156,6 +156,24 @@ class UserController {
       }
     }
 
+        /**
+   * @static
+   * @param {*} req Request
+   * @param {*} res Response
+   * @returns {object} Json response
+   * @memberof UserController
+   */
+        static async getAllUsers(req, res) {
+          try {
+      
+            const newUser = await User.find();
+      
+            return response(res, 200, 'success', 'All Users returned successfully', '', newUser);
+          } catch (err) {
+            return response(res, 500, 'failure', '', err.message);
+          }
+        }
+
   /**
    * @static
    * @param {*} req Request
