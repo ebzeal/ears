@@ -31,6 +31,7 @@ route.get('/committee', CommitteeController.getCommittee);
 route.put('/committee/:id', accessMiddleware.authoriseUser, CommitteeController.updateCommittee);
 
 route.post('/opening', accessMiddleware.authoriseUser, OpeningController.createOpening);
+route.get('/opening', accessMiddleware.authoriseUser, OpeningController.getAllOpenings);
 route.get('/opening/:id', accessMiddleware.authoriseUser, OpeningController.getOpening);
 route.put('/opening/:id', accessMiddleware.authoriseUser, OpeningController.updateOpening);
 route.post('/opening/apply/:id', accessMiddleware.authoriseUser, OpeningController.applyOpening);

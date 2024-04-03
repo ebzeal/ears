@@ -152,6 +152,24 @@ class OpeningController {
       }
     }
 
+    /**
+   * @static
+   * @param {*} req Request
+   * @param {*} res Response
+   * @returns {object} Json response
+   * @memberof OpeningController
+   */
+    static async getAllOpenings(req, res) {
+      try {
+
+        const opening = await Opening.find()
+  
+        return response(res, 200, 'success', 'all openings', opening);
+      } catch (error) {
+        return res.status(400).send(error);
+      }
+    }
+
 }
 
 export default OpeningController;
