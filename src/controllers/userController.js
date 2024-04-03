@@ -49,18 +49,22 @@ class UserController {
 
       const createdUser = await newUser.save();
 
+      if(!createdUser) {throw Error}
+
       const payload = {
         userId: createdUser.id,
         userEmail: createdUser.email,
         fullName: createdUser.fullName, 
         title: createdUser.title, 
-        privilege: createdUser.privilege
+        privilege: createdUser.privilege,
+        userType: createdUser.userType,
       };
 
       const token = await tokenHelp.sign(payload);
 
       return response(res, 201, 'success', 'Account created successfully', '', token);
     } catch (err) {
+      console.log("🚀 ~ UserController ~ signUp ~ err:", err)
       return response(res, 500, 'failure', '', err.message);
     }
   }
@@ -98,7 +102,9 @@ class UserController {
         userId: foundUser.id,
         userEmail: foundUser.email,
         userType: foundUser.userType,
-        privilege: foundUser.privilege
+        privilege: foundUser.privilege,
+        fullName: foundUser.fullName, 
+        title: foundUser.title, 
       };
 
       const token = tokenHelp.sign(payload);
@@ -186,16 +192,19 @@ class UserController {
 
       const inputObj = UtilHelp.cleanInput(req.body);
       const { id } = req.params;
-      if(req.user.userId !== id){
+      if(req.user.privilege !== 'admin' && req.user.userId !== id){
         return response(res, 401, 'failure', 'Unauthorized request');
       }
 
       const { title, email, firstName, lastName, phone,  password, bio } = inputObj;
+      console.log("🚀 ~ UserController ~ updateUser ~ bio:", bio)
 
       const foundUser = await User.findById(id);
+      console.log("🚀 ~ UserController ~ updateUser ~ foundUser:", foundUser)
       
+      const anotherUser = await User.findOne({email, _id: {$ne: foundUser._id}})
 
-        if (foundUser.email === email) {
+        if (anotherUser) {
           return response(res, 400, 'failure', 'Another user is registered with this email');
         }
 
@@ -205,12 +214,19 @@ class UserController {
             password: hashedPassword, }
           )
         }
+
+        const setName = ()=> {
+         const name1 = firstName ? firstName : [foundUser.fullName.split()][0];
+         const name2 = lastName ? lastName : [foundUser.fullName.split()][1];
+
+         return `${name1} ${name2}`
+        }
       
       await User.findOneAndUpdate({_id: id}, { 
         title: title?? foundUser.title, 
         email: email?? foundUser.email, 
-        fullName:`${firstName} ${lastName}` ?? foundUser.fullName, 
-        phone:`${phone}` ?? foundUser.phone, 
+        fullName:setName(), 
+        phone:phone ?? foundUser.phone, 
         bio: bio?? foundUser.bio });
 
       return response(res, 200, 'success', 'User updated');
