@@ -15,7 +15,7 @@ class UtilHelp {
     const entries = Object.entries(textObj);
     // eslint-disable-next-line no-restricted-syntax
     for (const [key, value] of entries) {
-      const newVal = value.trim().toLowerCase();
+      const newVal = value.trim();
       newObj[key] = newVal;
     }
     return newObj;

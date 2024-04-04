@@ -23,13 +23,14 @@ class OpeningController {
       }
 
       const inputObj = UtilHelp.cleanInput(req.body);
+     const status = req.body.status || "opened"
 
       const { title, description  } = inputObj;
 
       
 
       const newOpening = new Opening({
-        title, description
+        title, description, status
       });
 
       const createdOpening = await newOpening.save();
@@ -146,7 +147,7 @@ class OpeningController {
 
         const opening = await Opening.findOne({_id: id})
   
-        return response(res, 200, 'success', 'opening applied to', opening);
+        return response(res, 200, 'success', 'opening applied to', "", opening);
       } catch (error) {
         return res.status(400).send(error);
       }
@@ -161,12 +162,11 @@ class OpeningController {
    */
     static async getAllOpenings(req, res) {
       try {
-
         const opening = await Opening.find()
   
-        return response(res, 200, 'success', 'all openings', opening);
+        return response(res, 200, 'success', 'all openings',"", opening);
       } catch (error) {
-        return res.status(400).send(error);
+            return response(res, 500, 'failure', 'create opening error', error.message);
       }
     }
 

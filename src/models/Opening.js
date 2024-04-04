@@ -19,8 +19,8 @@ const openingSchema = new Schema({
   },
   status: {
     type: String,
-    enum: ['opened', 'close'],
-    default: 'opened',
+    enum: ['open', 'closed'],
+    default: 'open',
     required: true
   },
   createdOn: {

@@ -1,0 +1,2 @@
+MONGOURI =mongodb+srv://olajayi:8CALYMv2Klt3O46Q@cluster0.qebp3wt.mongodb.net/ears-app?retryWrites=true&w=majority&appName=Cluster0
+JWT_SECRET=mYSecret.

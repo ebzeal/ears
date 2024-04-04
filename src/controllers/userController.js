@@ -197,10 +197,8 @@ class UserController {
       }
 
       const { title, email, firstName, lastName, phone,  password, bio } = inputObj;
-      console.log("🚀 ~ UserController ~ updateUser ~ bio:", bio)
 
       const foundUser = await User.findById(id);
-      console.log("🚀 ~ UserController ~ updateUser ~ foundUser:", foundUser)
       
       const anotherUser = await User.findOne({email, _id: {$ne: foundUser._id}})
 
