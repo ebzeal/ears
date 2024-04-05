@@ -35,8 +35,8 @@ const openingSchema = new Schema({
       },
       status: {
         type: String,
-        enum: ['considered', 'accepted', 'rejected'],
-        default: 'considered',
+        enum: ['pending', 'considered', 'accepted', 'rejected'],
+        default: 'pending',
         required: true
       },
       reviews: [
@@ -46,6 +46,11 @@ const openingSchema = new Schema({
             ref: 'users'
           },
           review: {
+            type: String,
+            enum: ['considered', 'accepted', 'rejected'],
+            default: 'considered'
+          },
+          comments: {
             type: String,
           },
           rating: {

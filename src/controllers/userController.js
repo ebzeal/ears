@@ -214,8 +214,8 @@ class UserController {
         }
 
         const setName = ()=> {
-         const name1 = firstName || firstName !== undefined ? firstName : [foundUser.fullName.split()][0];
-         const name2 = lastName || lastName !== undefined  ? lastName : [foundUser.fullName.split()][1];
+         const name1 = firstName  ? firstName : (foundUser.fullName.split(" "))[0];
+         const name2 = lastName  ? lastName : (foundUser.fullName.split(" "))[1];
 
          return `${name1} ${name2}`
         }

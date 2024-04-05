@@ -1,5 +1,3 @@
-<!-- [![Build Status](https://travis-ci.com/ebzeal/twitter-clone.svg?branch=master)](https://travis-ci.com/ebzeal/twitter-clone) -->
-[![Maintainability](https://api.codeclimate.com/v1/badges/ec09a0009b56c4ba9f87/maintainability)](https://codeclimate.com/github/ebzeal/twitter-clone/maintainability)
 
 # ears-backend
 

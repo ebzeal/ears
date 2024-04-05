@@ -87,14 +87,13 @@ class OpeningController {
       const {userId} = req.user;
 
       const applicationObject = { user: userId };
-    
       await Opening.findOneAndUpdate({_id: id}, {
         $push: {
-          applicationObject
+          applications:applicationObject
         }
       });
 
-      return response(res, 200, 'success', 'openning applied to');
+      return response(res, 200, 'success', 'opening applied to');
     } catch (error) {
       return res.status(400).send(error);
     }
@@ -107,27 +106,52 @@ class OpeningController {
    * @returns {object} Json response
    * @memberof OpeningController
    */
+    static async getApplication(req, res) {
+      try {
+        const {openingId, applicationId } = req.params;
+      
+        const opening = await Opening.findOne({_id: openingId}).populate('applications.user');
+        const application = opening.applications.filter((item)=> item._id.equals(applicationId))
+        
+        const resItem = {opening, application:application[0]}
+  
+        return response(res, 200, 'success', 'opening applied to', '', resItem);
+      } catch (error) {
+        return res.status(400).send(error);
+      }
+    }
+
+    /**
+   * @static
+   * @param {*} req Request
+   * @param {*} res Response
+   * @returns {object} Json response
+   * @memberof OpeningController
+   */
     static async reviewApplication(req, res) {
       try {
-        const { id } = req.params;
-        const {userId} = req.user;
-
-
-        const inputObj = UtilHelp.cleanInput(req.body);
-
-        const {review, rating  } = inputObj;
-
-        const newReview = { reviewer: userId, review, rating};
+        const { openingId, applicationId } = req.params;
+        const { userId } = req.user;
       
-        await Opening.findOneAndUpdate({_id: id}, 
-          { $push: { 'applications.$[app].reviews': newReview } },
-          {
-            new: true,
-            arrayFilters: [{ 'app.user': userId }] // Replace 'userId' with the ObjectId reference of the user whose application you're updating
-        }
-        );
+        const inputObj = UtilHelp.cleanInput(req.body);
+        const { review, rating, comments } = inputObj;
+        const newReview = { reviewer: userId, review, rating, comments };
+      
+        const updatedOpening = await Opening.findOneAndUpdate(
+          { 
+            _id: openingId, 
+            "applications._id": applicationId 
+          },
+          { 
+            $push: { "applications.$.reviews": newReview } 
+          },
+          { 
+            new: true // To return the updated document after the update operation
+          }
+        ).populate('applications.user');
   
-        return response(res, 200, 'success', 'opening applied to');
+  
+        return response(res, 200, 'success', 'Review added successfully', '', updatedOpening);
       } catch (error) {
         return res.status(400).send(error);
       }
@@ -145,7 +169,7 @@ class OpeningController {
       try {
         const { id } = req.params;
 
-        const opening = await Opening.findOne({_id: id})
+        const opening = await Opening.findOne({_id: id}).populate('applications.user')
   
         return response(res, 200, 'success', 'opening applied to', "", opening);
       } catch (error) {

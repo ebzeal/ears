@@ -34,7 +34,8 @@ route.post('/opening', accessMiddleware.authoriseUser, OpeningController.createO
 route.get('/opening', accessMiddleware.authoriseUser, OpeningController.getAllOpenings);
 route.get('/opening/:id', accessMiddleware.authoriseUser, OpeningController.getOpening);
 route.put('/opening/:id', accessMiddleware.authoriseUser, OpeningController.updateOpening);
+route.get('/opening/:openingId/application/:applicationId', accessMiddleware.authoriseUser, OpeningController.getApplication);
 route.post('/opening/apply/:id', accessMiddleware.authoriseUser, OpeningController.applyOpening);
-route.post('/opening/review/:id', accessMiddleware.authoriseUser, OpeningController.reviewApplication);
+route.post('/opening/:openingId/review/:applicationId', accessMiddleware.authoriseUser, OpeningController.reviewApplication);
 
 export default route;
