@@ -10,7 +10,7 @@ app.use(express.json());
 app.use(cors());
 
 
-const port = process.env.PORT || 5500;
+const port = process.env.PORT || 3000;
 
 const mongoUri = process.env.MONGOURI;
 
