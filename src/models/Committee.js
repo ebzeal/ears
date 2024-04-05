@@ -20,7 +20,6 @@ const committeeSchema = new Schema({
   },
   description: {
     type: String,
-    required: true,
   },
   createdOn: {
     type: Date,

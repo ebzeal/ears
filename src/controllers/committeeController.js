@@ -2,6 +2,7 @@
 import committeeDB from '../models/Committee';
 import response from '../helpers/resHelp';
 import UtilHelp from '../helpers/utilsHelp';
+import { ObjectId } from 'mongodb';
 
 const Committee = committeeDB;
 
@@ -22,19 +23,19 @@ class CommitteeController {
         return response(res, 401, 'failure', 'Unauthorized request');
       }
 
-      const inputObj = UtilHelp.cleanInput(req.body);
+      // const inputObj = UtilHelp.cleanInput(req.body);
 
-      const { name, committee_head, description, committee_members  } = inputObj;
+      const { name, committee_head, description, committee_members  } = req.body;
 
       
 
       const newCommittee = new Committee({
-        name, committee_head, description, committee_members
+        name, committee_head, description: description ?? '',
+        committee_members: committee_members.map(member => ({ user: new ObjectId(member) }))
       });
-
+     
       const createdCommittee = await newCommittee.save();
-
-
+      
       return response(res, 201, 'success', 'Committee created successfully', '', createdCommittee);
     } catch (err) {
       return response(res, 500, 'failure', '', err.message);
@@ -55,6 +56,26 @@ class CommitteeController {
       const newCommittee = await Committee.findById({_id:id})
 
       return response(res, 200, 'success', 'Committee returned successfully', '', newCommittee);
+    } catch (err) {
+      return response(res, 500, 'failure', '', err.message);
+    }
+  }
+
+
+   /**
+   * @static
+   * @param {object} req - request object
+   * @param {object} res - response object
+   * @return {object} A JSON Response object
+   * @memberof CommitteeController
+   */
+   static async getCommittees(req, res) {
+    try {
+
+      const allCommittees = await Committee.find().populate(['committee_head', 'committee_members.user'])
+      console.log("🚀 ~ CommitteeController ~ getCommittees ~ allCommittees:", allCommittees)
+
+      return response(res, 200, 'success', 'Committee returned successfully', '', allCommittees);
     } catch (err) {
       return response(res, 500, 'failure', '', err.message);
     }

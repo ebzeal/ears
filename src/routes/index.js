@@ -27,6 +27,7 @@ route.put('/user/toggleAccess/:id', accessMiddleware.authoriseUser, UserControll
 route.put('/user/:id', accessMiddleware.authoriseUser, UserController.updateUser);
 
 route.post('/committee', accessMiddleware.authoriseUser, CommitteeController.createCommittee);
+route.get('/committees', CommitteeController.getCommittees);
 route.get('/committee', CommitteeController.getCommittee);
 route.put('/committee/:id', accessMiddleware.authoriseUser, CommitteeController.updateCommittee);
 
