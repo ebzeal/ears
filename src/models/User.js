@@ -23,6 +23,7 @@ const userSchema = new Schema({
   },
   phone: {
     type: String,
+    default: null
   },
   password: {
     type: String,
@@ -53,7 +54,7 @@ const userSchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: 'users'
       },
-      quaulification: {
+      qualification: {
         type: String,
       },
       school: {
